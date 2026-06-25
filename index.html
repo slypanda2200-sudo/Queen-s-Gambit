@@ -368,6 +368,10 @@
     41% { opacity: 0; } /* Плавно жоғалу */
     100% { opacity: 0; }
 }
+@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 
 /* МӨЛДІР ҚАРА БАРҚЫТ ҚАБАТ (БАСҚАНДА ШЫҒАТЫН МӘЛІМЕТ) */
 .gallery-card .card-overlay {
@@ -448,10 +452,34 @@
             .menu-container { right: 15px; top: 15px; }
             .about-text, .about-img { transform: translateY(30px) !important; translateX: 0 !important; }
         }
+        /* Экранның сол жағына тұрақты бекіту */
+.sidebar-logo-link {
+    position: fixed;
+    top: 40%;        /* Экранның төбесінен төмен, орта тұсына орналастыру (пайызды өзгертуге болады) */
+    left: 20px;       /* Сол жақ шеттен қашықтық */
+    z-index: 1000;    /* Басқа элементтердің бетінде тұруы үшін */
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+/* Тышқанды жақындатқанда сәл үлкеюі */
+.sidebar-logo-link:hover {
+    transform: scale(1.1);
+}
+
+/* Суретті мінсіз дөңгелек қылу стилі */
+.sidebar-logo-img {
+    width: 70px;         /* Эмблеманың ені */
+    height: 70px;        /* Эмблеманың биіктігі */
+    aspect-ratio: 1 / 1; /* Суретті міндетті түрде тең квадрат қылады */
+    border-radius: 50%;  /* Квадратты таза дөңгелекке айналдырады */
+    object-fit: cover;   /* Сурет созылмай, ортасынан әдемі қиылады */
+    border: 3px solid #ffffff; /* Ақ жиек */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Әдемі қою көлеңке */
+}
     </style>
 </head>
 <body>
-
     <div class="menu-container">
         <button class="menu-btn" onclick="toggleMenu()">
             <span>☰</span> Меню
@@ -487,6 +515,14 @@
 
         <section id="about">
             <h2>Сериал туралы</h2>
+            <audio id="bg-music" src="bg-music.mp3"></audio>
+
+<a href="#" onclick="toggleMusic(event)" style="position: fixed; top: 40%; left: 20px; z-index: 9999; display: inline-block; text-decoration: none;">
+    <div id="emblem-div" style="width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: spin 8s linear infinite;">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxD_c_Dom-AcLRbudiTdQLCFZhtd1CEXBkpxea8cb5tA&s=10" alt="Логотип"
+             style="width: 100%; height: 100%; object-fit: cover; display: block;">
+    </div>
+</a>
             <div class="about-flex">
                 <div class="about-text">
                     <p><strong>«Ход королевы» (The Queen's Gambit)</strong> — Уолтер Тевистің 1983 жылғы аттас романына негізделген Netflix мини-сериалы. Сериал 2020 жылы жарыққа шығып, әлем бойынша феноменге айналды.</p>
@@ -582,6 +618,22 @@
             const navLinks = document.getElementById('navLinks');
             navLinks.classList.toggle('active');
         }
+        function toggleMusic(event) {
+        event.preventDefault(); // Сілтеме басылғанда беттің жоғарыға секіріп кетпеуі үшін
+
+        var music = document.getElementById("bg-music");
+        var emblem = document.getElementById("emblem-div");
+
+        if (music.paused) {
+            music.play();
+            // Музыка ойнап тұрғанда айналу жылдамдығын тездету немесе қалыпты ұстау (қазір 8 секунд тұр)
+            emblem.style.animationPlayState = "running";
+        } else {
+            music.pause();
+            // Музыка тоқтағанда айналуын да тоқтата тұру (pause)
+            emblem.style.animationPlayState = "paused";
+        }
+    }
 
         // Басты беттегі мәтіннің скролл кезінде жоғалуы (Fade-out)
         const heroContent = document.getElementById('heroContent');
